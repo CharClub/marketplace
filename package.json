@@ -1,0 +1,24 @@
+{
+  "engines": {
+    "node": ">=18.12.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.3.0",
+  "name": "CharclubMarketplace",
+  "scripts": {
+    "setup": "pnpm -r install && dfx generate && dfx deploy",
+    "build": "pnpm -r build",
+    "prebuild": "pnpm -r prebuild",
+    "pretest": "pnpm -r prebuild",
+    "start": "pnpm -r start",
+    "dev:web": "pnpm --filter=frontend dev",
+    "test": "pnpm -r test",
+    "deploy": "dfx deploy"
+  },
+  "type": "module",
+  "workspaces": {
+    "packages": [
+      "src/frontend"
+    ]
+  }
+}
