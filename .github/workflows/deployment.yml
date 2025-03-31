@@ -38,26 +38,25 @@ jobs:
 
       - name: Check Canister Balance
         run: |
-          balance=$(dfx canister --network ic status backend 2>&1 >/dev/null | grep Balance: | sed 's/[^0-9]//g')
+          balance=$(dfx canister --network ic status backend 2>&1 | grep Balance: | sed 's/[^0-9]//g')
           LANG=en_US.UTF-8
           balance_formatted=$(echo $balance | awk '{printf "%'\''d\n", $0}')
           echo "Canister balance: $balance_formatted"
           if [ "${balance:-0}" -lt 5000000000000 ]; then
-
-          payload=$(jq -n --arg canister "$canister_id" --arg balance "$balance_formatted" '{
-            "embeds": [{
-              "title": ":warning: Internet Computer Canister Alert",
-              "color": 16711680,
-              "description": "Canister `charclub_backend` balance is **\($balance)**.",
-              "fields": [
-                {
-                  "name": "Top it up by:",
-                  "value": "- Running: `dfx ledger --network ic top-up \($canister) --amount 5.0`\n- Or adding the canister on the NNS and sending cycles to it."
-                }
-              ]
-            }]
-          }')
-          curl -H "Content-Type: application/json" -d "$payload" -X POST "$DISCORD_WEBHOOK_URL" -o /dev/null
+            payload=$(jq -n --arg canister "$canister_id" --arg balance "$balance_formatted" '{
+              "embeds": [{
+                "title": ":warning: Internet Computer Canister Alert",
+                "color": 16711680,
+                "description": "Canister `marketplace_backend` balance is **\($balance)**.",
+                "fields": [
+                  {
+                    "name": "Top it up by:",
+                    "value": "- Running: `dfx ledger --network ic top-up \($canister) --amount 5.0`\n- Or adding the canister on the NNS and sending cycles to it."
+                  }
+                ]
+              }]
+            }')
+            curl -H "Content-Type: application/json" -d "$payload" -X POST "$DISCORD_WEBHOOK_URL" -o /dev/null
           fi
         env:
           DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/1356207850807890052/282TX4qN_Ej27SlQj6ZUiSyKXlyvffrekGut6htV51zsR0EI0K10cDMg00_jbpfaySMG
