@@ -38,12 +38,12 @@ jobs:
 
       - name: Check Canister Balance
         run: |
-          balance=$(dfx canister --network ic status portal 2>&1 >/dev/null | grep Balance: | sed 's/[^0-9]//g')
+          balance=$(dfx canister --network ic status backend 2>&1 >/dev/null | grep Balance: | sed 's/[^0-9]//g')
           LANG=en_US.UTF-8
           balance_formatted=$(echo $balance | awk '{printf "%'\''d\n", $0}')
           echo "Canister balance: $balance_formatted"
-          if [ "5000000000000" -gt "$balance" ]; then
-            canister_id=$(cat "$GITHUB_WORKSPACE/canister_ids.json" | jq -r '.portal.ic')
+          if [ "${balance:-0}" -lt 5000000000000 ]; then
+            canister_id=$(cat "$GITHUB_WORKSPACE/canister_ids.json" | jq -r '.backend.ic')
             message=":warning: **Internet Computer Canister Alert** :warning:\n\nCanister \`$canister_id\` balance is **$balance_formatted**.\n\nTop it up by:\n- Running: \`dfx ledger --network ic top-up $canister_id --amount 5.0\`\n- Or adding the canister on the NNS and sending cycles to it."
 
             payload="{\"content\": \"$message\"}"
