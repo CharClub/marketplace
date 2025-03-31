@@ -48,7 +48,7 @@ jobs:
             "embeds": [{
               "title": ":warning: Internet Computer Canister Alert",
               "color": 16711680,
-              "description": "Canister `charclub_backend` balance is **\($balknce)**.",
+              "description": "Canister `charclub_backend` balance is **\($balance)**.",
               "fields": [
                 {
                   "name": "Top it up by:",
