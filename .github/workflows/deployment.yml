@@ -25,17 +25,6 @@ jobs:
         with:
           version: 9.3.0
 
-      - uses: actions/github-script@v6
-        with:
-          script: |
-            const comments = require('./.github/workflows/scripts/comments.mjs');
-            const maybeComment = await comments.getComment(context, github);
-            if (maybeComment) {
-              await comments.updateComment(context, github, maybeComment.id,  `🤖 Your PR preview is being built...`);
-            } else {
-              await comments.createComment(context, github, `🤖 Your PR preview is being built...`);
-            }
-
       - name: Install DFX
         uses: dfinity/setup-dfx@main
 
@@ -71,14 +60,3 @@ jobs:
         env:
           VITE_CHARCLUB_AI_URL: "https://chat.charclub.ai"
           CANISTER_ID_LEDGE: "ryjl3-tyaaa-aaaaa-aaaba-cai"
-
-      - uses: actions/github-script@v6
-        with:
-          script: |
-            const comments = require('./.github/workflows/scripts/comments.js');
-            const maybeComment = await comments.get(context, github);
-            if (maybeComment) {
-              await comments.update(context, github, maybeComment.id,  `🤖 Deployment finished`);
-            } else {
-              await comments.create(context, github, `🤖 Deployment fisnished`);
-            }
