@@ -41,6 +41,7 @@ jobs:
 
       - name: Check Canister Balance
         run: |
+          dfx canister --network ic status backend
           balance=$(dfx canister --network ic status backend 2>&1 | grep Balance: | sed 's/[^0-9]//g')
           LANG=en_US.UTF-8
           balance_formatted=$(echo $balance | awk '{printf "%'\''d\n", $0}')
