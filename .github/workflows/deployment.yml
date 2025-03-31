@@ -1,4 +1,4 @@
-name: PR Preview Deployment
+name: Deployment
 on:
   push:
     branches: [master]
