@@ -25,6 +25,9 @@ jobs:
         with:
           version: 9.3.0
 
+      - name: Setup Mops
+        run: curl -fsSL cli.mops.one/install.sh | sh 
+
       - name: Install DFX
         uses: dfinity/setup-dfx@main
 
@@ -42,7 +45,7 @@ jobs:
           LANG=en_US.UTF-8
           balance_formatted=$(echo $balance | awk '{printf "%'\''d\n", $0}')
           echo "Canister balance: $balance_formatted"
-          if [ "${balance:-0}" -lt 5000000000000 ]; then
+          if [ "5000000000000" -gt "$balance" ]; then
             payload=$(jq -n --arg canister "$canister_id" --arg balance "$balance_formatted" '{
               "embeds": [{
                 "title": ":warning: Internet Computer Canister Alert",
