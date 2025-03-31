@@ -33,7 +33,7 @@ jobs:
             if (maybeComment) {
               await comments.updateComment(context, github, maybeComment.id,  `🤖 Your PR preview is being built...`);
             } else {
-              await comments.create(context, github, `🤖 Your PR preview is being built...`);
+              await comments.createComment(context, github, `🤖 Your PR preview is being built...`);
             }
 
       - name: Install DFX
