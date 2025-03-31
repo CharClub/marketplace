@@ -1,0 +1,84 @@
+name: PR Preview Deployment
+on:
+  push:
+    branches: [master]
+  pull_request:
+    types: [opened]
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    environment: mainnet
+    concurrency:
+      group: pr-${{ github.event.pull_request.number || github.event.number }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            const comments = require('./.github/workflows/scripts/comments.mjs');
+            const maybeComment = await comments.getComment(context, github);
+            if (maybeComment) {
+              await comments.updateComment(context, github, maybeComment.id,  `🤖 Your PR preview is being built...`);
+            } else {
+              await comments.create(context, github, `🤖 Your PR preview is being built...`);
+            }
+
+      - name: Install DFX
+        uses: dfinity/setup-dfx@main
+
+      - name: Dump Identity
+        run: |
+          mkdir -p ~/.config/dfx/identity/default
+          echo $DFX_IDENTITY | base64 -d > ~/.config/dfx/identity/default/identity.pem
+          sed -i 's/\\r\\n/\r\n/g' ~/.config/dfx/identity/default/identity.pem
+        env:
+          DFX_IDENTITY: ${{ secrets.DFX_IDENTITY }}
+
+      - name: Check Canister Balance
+        run: |
+          balance=$(dfx canister --network ic status portal 2>&1 >/dev/null | grep Balance: | sed 's/[^0-9]//g')
+          LANG=en_US.UTF-8
+          balance_formatted=$(echo $balance | awk '{printf "%'\''d\n", $0}')
+          echo "Canister balance: $balance_formatted"
+          if [ "5000000000000" -gt "$balance" ]; then
+            canister_id=$(cat "$GITHUB_WORKSPACE/canister_ids.json" | jq -r '.portal.ic')
+            message=":warning: **Internet Computer Canister Alert** :warning:\n\nCanister \`$canister_id\` balance is **$balance_formatted**.\n\nTop it up by:\n- Running: \`dfx ledger --network ic top-up $canister_id --amount 5.0\`\n- Or adding the canister on the NNS and sending cycles to it."
+
+            payload="{\"content\": \"$message\"}"
+            curl -H "Content-Type: application/json" -d "$payload" -X POST "$DISCORD_WEBHOOK_URL" -o /dev/null
+          fi
+        env:
+          DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/1356207850807890052/282TX4qN_Ej27SlQj6ZUiSyKXlyvffrekGut6htV51zsR0EI0K10cDMg00_jbpfaySMG
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: "Build & Deploy"
+        run: dfx deploy --network=ic backend --argument '(record { owner = principal "nqh6f-mgbjr-4iepl-umlpk-ye5l4-kkupj-ltwmu-z37ly-dio6c-ev6kr-qqe"; subaccount = null })'
+        env:
+          VITE_CHARCLUB_AI_URL: "https://chat.charclub.ai"
+          CANISTER_ID_LEDGE: "ryjl3-tyaaa-aaaaa-aaaba-cai"
+
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            const comments = require('./.github/workflows/scripts/comments.js');
+            const maybeComment = await comments.get(context, github);
+            if (maybeComment) {
+              await comments.update(context, github, maybeComment.id,  `🤖 Deployment finished`);
+            } else {
+              await comments.create(context, github, `🤖 Deployment fisnished`);
+            }
