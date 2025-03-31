@@ -43,11 +43,21 @@ jobs:
           balance_formatted=$(echo $balance | awk '{printf "%'\''d\n", $0}')
           echo "Canister balance: $balance_formatted"
           if [ "${balance:-0}" -lt 5000000000000 ]; then
-            canister_id=$(cat "$GITHUB_WORKSPACE/canister_ids.json" | jq -r '.backend.ic')
-            message=":warning: **Internet Computer Canister Alert** :warning:\n\nCanister \`$canister_id\` balance is **$balance_formatted**.\n\nTop it up by:\n- Running: \`dfx ledger --network ic top-up $canister_id --amount 5.0\`\n- Or adding the canister on the NNS and sending cycles to it."
 
-            payload="{\"content\": \"$message\"}"
-            curl -H "Content-Type: application/json" -d "$payload" -X POST "$DISCORD_WEBHOOK_URL" -o /dev/null
+          payload=$(jq -n --arg canister "$canister_id" --arg balance "$balance_formatted" '{
+            "embeds": [{
+              "title": ":warning: Internet Computer Canister Alert",
+              "color": 16711680,
+              "description": "Canister `charclub_backend` balance is **\($balknce)**.",
+              "fields": [
+                {
+                  "name": "Top it up by:",
+                  "value": "- Running: `dfx ledger --network ic top-up \($canister) --amount 5.0`\n- Or adding the canister on the NNS and sending cycles to it."
+                }
+              ]
+            }]
+          }')
+          curl -H "Content-Type: application/json" -d "$payload" -X POST "$DISCORD_WEBHOOK_URL" -o /dev/null
           fi
         env:
           DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/1356207850807890052/282TX4qN_Ej27SlQj6ZUiSyKXlyvffrekGut6htV51zsR0EI0K10cDMg00_jbpfaySMG
@@ -58,5 +68,6 @@ jobs:
       - name: "Build & Deploy"
         run: dfx deploy --network=ic backend --argument '(record { owner = principal "nqh6f-mgbjr-4iepl-umlpk-ye5l4-kkupj-ltwmu-z37ly-dio6c-ev6kr-qqe"; subaccount = null })'
         env:
+          DFX_WARNING: -mainnet_plaintext_identity
           VITE_CHARCLUB_AI_URL: "https://chat.charclub.ai"
           CANISTER_ID_LEDGE: "ryjl3-tyaaa-aaaaa-aaaba-cai"
