@@ -48,13 +48,15 @@ jobs:
       - name: Install Frontend Dependencies
         run: pnpm install
 
-      - name: Build
+      - name: Deploy Frontend
+        run: dfx deploy --network=ic frontend
+
+      - name: Build backend
         run: dfx build backend --network=ic
 
-      - name: "Deploy"
+      - name: "Create deploy backend proposal"
         run: |
           .github/scripts/submit-deploy.sh --wasm ./.dfx/ic/canisters/backend/backend.wasm --canister-id $(dfx canister id threshold --network=ic) --target-canister-id $(dfx canister id backend --network=ic) 
-          # dfx deploy --network=ic frontend
         env:
           DFX_WARNING: -mainnet_plaintext_identity
           VITE_CHARCLUB_AI_URL: "https://chat.charclub.ai"

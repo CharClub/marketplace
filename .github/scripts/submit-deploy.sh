@@ -73,6 +73,8 @@ result=$(dfx canister call "$canister_id" submit --network=ic \
   )"))
 proposal_id=$(echo "$result" | sed 's/(\([0-9]*\) : nat)/\1/')
 
+echo "Proposal ID: $proposal_id"
+
 payload=$(jq -n --arg canister "$canister_id" --arg target_canister "$target_canister_id" --arg proposal_id "$proposal_id" '{
     "embeds": [{
       "title": "Proposal Created",
@@ -81,11 +83,11 @@ payload=$(jq -n --arg canister "$canister_id" --arg target_canister "$target_can
       "fields": [
         {
           "name": "Accept the proposal",
-          "value": "`dfx canister --network=ic call \($canister) accept \($proposal_id)`"
+          "value": "```dfx canister --network=ic call \($canister) accept \($proposal_id)```"
         },
         {
           "name": "Reject the proposal",
-          "value": "`dfx canister --network=ic call \($canister) reject \($proposal_id)`"
+          "value": "```dfx canister --network=ic call \($canister) reject \($proposal_id)```"
         }
       ]
     }]
