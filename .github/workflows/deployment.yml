@@ -63,6 +63,7 @@ jobs:
             curl -H "Content-Type: application/json" -d "$payload" -X POST "$DISCORD_WEBHOOK_URL" -o /dev/null
           fi
         env:
+          DFX_WARNING: -mainnet_plaintext_identity
           DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/1356207850807890052/282TX4qN_Ej27SlQj6ZUiSyKXlyvffrekGut6htV51zsR0EI0K10cDMg00_jbpfaySMG
 
       - name: Install Dependencies
