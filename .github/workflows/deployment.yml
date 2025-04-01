@@ -45,7 +45,7 @@ jobs:
           DFX_WARNING: -mainnet_plaintext_identity
           DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/1356207850807890052/282TX4qN_Ej27SlQj6ZUiSyKXlyvffrekGut6htV51zsR0EI0K10cDMg00_jbpfaySMG
 
-      - name: Install Dependencies
+      - name: Install Frontend Dependencies
         run: pnpm install
 
       - name: Build
@@ -53,7 +53,7 @@ jobs:
 
       - name: "Deploy"
         run: |
-          .github/scripts/submit-deploy.sh --wasm ./.dfx/local/canisters/backend/backend.wasm --canister-id $(dfx canister id threshold --network=ic) --target-canister-id $(dfx canister id backend --network=ic) 
+          .github/scripts/submit-deploy.sh --wasm ./.dfx/ic/canisters/backend/backend.wasm --canister-id $(dfx canister id threshold --network=ic) --target-canister-id $(dfx canister id backend --network=ic) 
           # dfx deploy --network=ic frontend
         env:
           DFX_WARNING: -mainnet_plaintext_identity
