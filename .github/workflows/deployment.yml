@@ -49,7 +49,7 @@ jobs:
         run: pnpm install
 
       - name: Build
-        run: dfx build backend
+        run: dfx build backend --network=ic
 
       - name: "Deploy"
         run: |
