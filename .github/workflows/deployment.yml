@@ -26,7 +26,7 @@ jobs:
           version: 9.3.0
 
       - name: Setup Mops
-        run: curl -fsSL cli.mops.one/install.sh | sh 
+        run: curl -fsSL cli.mops.one/install.sh | sh
 
       - name: Install DFX
         uses: dfinity/setup-dfx@main
@@ -70,7 +70,9 @@ jobs:
         run: pnpm install
 
       - name: "Build & Deploy"
-        run: dfx deploy --network=ic backend --argument '(record { owner = principal "nqh6f-mgbjr-4iepl-umlpk-ye5l4-kkupj-ltwmu-z37ly-dio6c-ev6kr-qqe"; subaccount = null })'
+        run: |
+          dfx deploy --network=ic backend --argument '(record { owner = principal "nqh6f-mgbjr-4iepl-umlpk-ye5l4-kkupj-ltwmu-z37ly-dio6c-ev6kr-qqe"; subaccount = null })'
+          dfx deploy --network=ic frontend
         env:
           DFX_WARNING: -mainnet_plaintext_identity
           VITE_CHARCLUB_AI_URL: "https://chat.charclub.ai"
