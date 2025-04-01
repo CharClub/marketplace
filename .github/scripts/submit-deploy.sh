@@ -73,11 +73,11 @@ result=$(dfx canister call "$canister_id" submit --network=ic \
   )"))
 proposal_id=$(echo "$result" | sed 's/(\([0-9]*\) : nat)/\1/')
 
-payload=$(jq -n --arg canister "$target_canister_id" '{
+payload=$(jq -n --arg canister "$target_canister_id" --arg proposal_id "$proposal_id" '{
     "embeds": [{
       "title": "Proposal Created",
       "color": 16711680,
-      "description": "Proposal `\($proposal_id)` to upgrade backend was created.",
+      "description": "Proposal $proposal_id to upgrade backend was created.",
       "fields": [
         {
           "name": "Accept the proposal",
