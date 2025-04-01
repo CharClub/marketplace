@@ -2,6 +2,13 @@
 
 set -euo pipefail
 
+# Check if didc is installed, if not install it
+if ! didc -V &> /dev/null
+then
+  curl -fsSL https://github.com/dfinity/candid/releases/download/${release}/didc-linux64 > $HOME/bin/didc
+  chmod +x $HOME/bin/didc
+fi
+
 declare wasm=
 declare canister_id=
 declare target_canister_id=
