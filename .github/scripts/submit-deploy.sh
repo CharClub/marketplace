@@ -5,6 +5,7 @@ set -euo pipefail
 # Check if didc is installed, if not install it
 if ! didc -V &> /dev/null
 then
+  release=$(curl --silent "https://api.github.com/repos/dfinity/candid/releases/latest" | grep -e '"tag_name"' | cut -c 16-25)
   curl -fsSL https://github.com/dfinity/candid/releases/download/${release}/didc-linux64 > $HOME/bin/didc
   chmod +x $HOME/bin/didc
 fi
