@@ -71,7 +71,7 @@ result=$(dfx canister call "$canister_id" submit --network=ic \
       $install_args
      }
   )"))
-proposal_id=$(echo "$result" | | sed 's/(\([0-9]*\) : nat)/\1/')
+proposal_id=$(echo "$result" | sed 's/(\([0-9]*\) : nat)/\1/')
 
 payload=$(jq -n --arg canister "$canister" --arg balance "$formatted_balance" '{
     "embeds": [{
