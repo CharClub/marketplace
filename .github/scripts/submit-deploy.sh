@@ -67,7 +67,7 @@ install_args=$(echo "(record {
   arg = $init_args
 })" | didc encode -f blob)
 
-dfx canister call "$canister_id" submit \
+dfx canister call "$canister_id" submit --network=ic \
   --argument-file <(echo "(
     \"Self upgrade\",
     record {
