@@ -3,12 +3,11 @@
 set -euo pipefail
 
 # Check if didc is installed, if not install it
-if ! didc -V &> /dev/null
-then
+if ! didc -V &>/dev/null; then
   mkdir -p $HOME/.local/bin
-  echo "$HOME/.local/bin" >> $GITHUB_PATH
+  echo "$HOME/.local/bin" >>$GITHUB_PATH
   release=$(curl --silent "https://api.github.com/repos/dfinity/candid/releases/latest" | grep -e '"tag_name"' | cut -c 16-25)
-  curl -fsSL https://github.com/dfinity/candid/releases/download/${release}/didc-linux64 > $HOME/.local/bin/didc
+  curl -fsSL https://github.com/dfinity/candid/releases/download/${release}/didc-linux64 >$HOME/.local/bin/didc
   chmod +x $HOME/.local/bin/didc
 fi
 
@@ -16,47 +15,43 @@ declare wasm=
 declare canister_id=
 declare target_canister_id=
 
-while [[ $# -gt 0 ]]
-do
-    case $1 in
-        --wasm)
-            wasm="${2:?missing value for '--wasm'}"
-            shift; # shift past --wasm and value
-            shift;
-            ;;
-        --canister-id)
-            canister_id="${2:?missing value for '--canister-id'}"
-            shift; # shift past --canister-id and value
-            shift;
-            ;;
-        --target-canister-id)
-            target_canister_id="${2:?missing value for '--target-canister-id'}"
-            shift; # shift past --target-canister-id and value
-            shift;
-            ;;
-        *)
-            echo "ERROR: unknown argument $1"
-            exit 1
-            ;;
-    esac
+while [[ $# -gt 0 ]]; do
+  case $1 in
+  --wasm)
+    wasm="${2:?missing value for '--wasm'}"
+    shift # shift past --wasm and value
+    shift
+    ;;
+  --canister-id)
+    canister_id="${2:?missing value for '--canister-id'}"
+    shift # shift past --canister-id and value
+    shift
+    ;;
+  --target-canister-id)
+    target_canister_id="${2:?missing value for '--target-canister-id'}"
+    shift # shift past --target-canister-id and value
+    shift
+    ;;
+  *)
+    echo "ERROR: unknown argument $1"
+    exit 1
+    ;;
+  esac
 done
 
-if [ -z "$wasm" ]
-then
-    echo "No wasm specified"
-    exit 1
+if [ -z "$wasm" ]; then
+  echo "No wasm specified"
+  exit 1
 fi
 
-if [ -z "$canister_id" ]
-then
-    echo "No canister id specified"
-    exit 1
+if [ -z "$canister_id" ]; then
+  echo "No canister id specified"
+  exit 1
 fi
 
-if [ -z "$target_canister_id" ]
-then
-    echo "No target canister id specified"
-    exit 1
+if [ -z "$target_canister_id" ]; then
+  echo "No target canister id specified"
+  exit 1
 fi
 
 init_args=$(didc encode '(record { owner = principal "be2us-64aaa-aaaaa-qaabq-cai"; subaccount = null })' -f blob)
@@ -67,12 +62,33 @@ install_args=$(echo "(record {
   arg = $init_args
 })" | didc encode -f blob)
 
-dfx canister call "$canister_id" submit --network=ic \
+result=$(dfx canister call "$canister_id" submit --network=ic \
   --argument-file <(echo "(
-    \"Self upgrade\",
+    \"Upgrade backend\",
     record {
       principal \"aaaaa-aa\";
       \"install_code\";
       $install_args
      }
-  )")
+  )"))
+proposal_id=$(echo "$result" | | sed 's/(\([0-9]*\) : nat)/\1/')
+
+payload=$(jq -n --arg canister "$canister" --arg balance "$formatted_balance" '{
+    "embeds": [{
+      "title": "Proposal Created",
+      "color": 16711680,
+      "description": "Proposal `\($proposal_id)` to upgrade backend was created.",
+      "fields": [
+        {
+          "name": "Accept the proposal",
+          "value": "Run `dfx canister --network=ic call $canister_id accept $proposal_id`"
+        },
+        {
+          "name": "Reject the proposal",
+          "value": "Run `dfx canister --network=ic call $canister_id reject $proposal_id`"
+        }
+      ]
+    }]
+  }')
+
+curl -H "Content-Type: application/json" -d "$payload" -X POST "$DISCORD_WEBHOOK_URL" -o /dev/null
