@@ -50,11 +50,13 @@ jobs:
 
       - name: Deploy Frontend
         run: dfx deploy --network=ic frontend
+        env:
+          DFX_WARNING: -mainnet_plaintext_identity
 
-      - name: Build backend
+      - name: Build Backend
         run: dfx build backend --network=ic
 
-      - name: "Create deploy backend proposal"
+      - name: "Create Deploy Backend Proposal"
         run: |
           .github/scripts/submit-deploy.sh --wasm ./.dfx/ic/canisters/backend/backend.wasm --canister-id $(dfx canister id threshold --network=ic) --target-canister-id $(dfx canister id backend --network=ic) 
         env:
