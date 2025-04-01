@@ -18,16 +18,16 @@ for canister in backend frontend; do
 
   if [ "$balance" -lt 5000000000000 ]; then
     payload=$(jq -n --arg canister "$canister" --arg balance "$formatted_balance" '{
-                "embeds": [{
-                  "title": ":warning: Internet Computer Canister Alert",
-                  "color": 16711680,
-                  "description": "Canister `\($canister)` balance is **\($balance)**.",
-                  "fields": [{
-                    "name": "Top it up by:",
-                    "value": "- Running: `dfx ledger --network ic top-up \($canister) --amount 5.0`\n- Or adding the canister on the NNS and sending cycles to it."
-                  }]
-                }]
-              }')
+      "embeds": [{
+        "title": ":warning: Internet Computer Canister Alert",
+        "color": 16711680,
+        "description": "Canister `\($canister)` balance is **\($balance)**.",
+        "fields": [{
+          "name": "Top it up by:",
+          "value": "- Running: `dfx ledger --network ic top-up \($canister) --amount 5.0`\n- Or adding the canister on the NNS and sending cycles to it."
+        }]
+      }]
+    }')
 
     curl -H "Content-Type: application/json" -d "$payload" -X POST "$DISCORD_WEBHOOK_URL" -o /dev/null
   fi

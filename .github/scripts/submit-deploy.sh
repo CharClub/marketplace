@@ -77,10 +77,14 @@ echo "Proposal ID: $proposal_id"
 
 payload=$(jq -n --arg canister "$canister_id" --arg target_canister "$target_canister_id" --arg proposal_id "$proposal_id" '{
     "embeds": [{
-      "title": "Proposal Created",
+      "title": ":white_check_mark: Proposal Created",
       "color": 2326507,
-      "description": "Proposal \($proposal_id) to upgrade \($target_canister) was created.",
+      "description": "Proposal `\($proposal_id)` to upgrade `\($target_canister)` was created.",
       "fields": [
+        {
+          "name": "View the proposal",
+          "value": "```dfx canister --network=ic call \($canister) getProposal \($proposal_id)```"
+        },
         {
           "name": "Accept the proposal",
           "value": "```dfx canister --network=ic call \($canister) accept \($proposal_id)```"

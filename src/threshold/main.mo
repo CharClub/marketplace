@@ -79,21 +79,14 @@ actor class (signers : [Principal]) = threshold {
             prop.state := { prop.state with yes = yes + 1; votes };
             // voting threshold reached
             if (2 * prop.state.yes > signers.size()) {
-              Debug.print("Voting threshold reached");
               // retire the proposal
               prop.state := { prop.state with active = false };
               // execute payload and keep result in the state
               await* execute(prop, payload);
             };
-            Debug.print("Voting threshold not reached");
             return;
           };
-          case (false, _) {
-            Debug.print("Proposal already accepted");
-          };
-          case _ {
-            Debug.print("Invalid vote");
-          };
+          case _ ();
         };
       };
     };
@@ -194,17 +187,13 @@ actor class (signers : [Principal]) = threshold {
   private func execute(prop : Prop, (principal, method, blob) : Payload) : async* () {
     switch (isCanisterUpgrade(principal, method, blob)) {
       case (?params) {
-        Debug.print("Installing code");
         let acceptedParams: InstallCodeArgs = {
           params with 
           sender_canister_version = null
         };
-        let result = await IC.install_code(acceptedParams);
-
-        Debug.print(debug_show(result));
+        await IC.install_code(acceptedParams);
       };
       case _ {
-        Debug.print("Calling raw");
         let res = await call_raw(principal, method, blob);
         prop.state := { prop.state with result = ?res };
       };
@@ -235,8 +224,6 @@ actor class (signers : [Principal]) = threshold {
     if (addressee == principalOfActor(IC) and method == "install_code") {
       do ? {
         let params: InstallParams = (from_candid (args) : ?InstallParams)!;
-
-        Debug.print("params: " # debug_show(params));
 
         params;
       };
