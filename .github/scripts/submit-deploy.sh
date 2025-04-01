@@ -73,7 +73,7 @@ result=$(dfx canister call "$canister_id" submit --network=ic \
   )"))
 proposal_id=$(echo "$result" | sed 's/(\([0-9]*\) : nat)/\1/')
 
-payload=$(jq -n --arg canister "$target_canister_id" --arg balance "$formatted_balance" '{
+payload=$(jq -n --arg canister "$target_canister_id" '{
     "embeds": [{
       "title": "Proposal Created",
       "color": 16711680,
