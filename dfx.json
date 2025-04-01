@@ -1,5 +1,10 @@
 {
   "canisters": {
+    "threshold": {
+      "main": "src/threshold/main.mo",
+      "type": "motoko",
+      "args": "--release -no-timer"
+    },
     "backend": {
       "main": "src/backend/main.mo",
       "type": "motoko",

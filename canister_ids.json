@@ -4,5 +4,8 @@
   },
   "frontend": {
     "ic": "5ofvd-siaaa-aaaao-a4dba-cai"
+  },
+  "threshold": {
+    "ic": "5sbps-fiaaa-aaaao-a4dda-cai"
   }
 }
