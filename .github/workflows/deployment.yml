@@ -40,16 +40,6 @@ jobs:
         env:
           DFX_IDENTITY: ${{ secrets.DFX_IDENTITY }}
 
-      - name: Install Frontend Dependencies
-        run: pnpm install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.PAT }}
-
-      - name: Deploy Frontend
-        run: dfx deploy --network=ic frontend
-        env:
-          DFX_WARNING: -mainnet_plaintext_identity
-
       - name: Build Backend
         run: dfx build backend --network=ic
 
@@ -61,3 +51,14 @@ jobs:
           VITE_CHARCLUB_AI_URL: "https://chat.charclub.ai"
           CANISTER_ID_LEDGE: "ryjl3-tyaaa-aaaaa-aaaba-cai"
           DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/1356207850807890052/282TX4qN_Ej27SlQj6ZUiSyKXlyvffrekGut6htV51zsR0EI0K10cDMg00_jbpfaySMG
+
+      - name: Install Frontend Dependencies
+        run: pnpm install
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.PAT }}
+
+      - name: Deploy Frontend
+        run: dfx deploy --network=ic frontend
+        env:
+          DFX_WARNING: -mainnet_plaintext_identity
+
