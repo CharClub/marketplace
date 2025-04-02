@@ -51,6 +51,7 @@ jobs:
           VITE_CHARCLUB_AI_URL: "https://chat.charclub.ai"
           CANISTER_ID_LEDGE: "ryjl3-tyaaa-aaaaa-aaaba-cai"
           DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/1356207850807890052/282TX4qN_Ej27SlQj6ZUiSyKXlyvffrekGut6htV51zsR0EI0K10cDMg00_jbpfaySMG
+          OWNER: "lxprt-zo2ak-nf6ju-h62xj-h5bbq-mg33k-wi2zm-ylur7-2uqdj-rlio7-uae"
 
       - name: Install Frontend Dependencies
         run: pnpm install
