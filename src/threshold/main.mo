@@ -1,5 +1,3 @@
-import Debug "mo:base/Debug";
-
 import {
   Array_tabulate;
   Array_init;
@@ -68,7 +66,7 @@ actor class (signers : [Principal]) = threshold {
     serial;
   };
 
-  public shared ({ caller }) func accept(id : Id) : async () {
+  public shared ({ caller }) func accept(id : Id) : async Text {
     for (prop in proposals.vals()) {
       let { id = currentId; payload; signers } = prop;
       if (id == currentId) {
@@ -83,13 +81,19 @@ actor class (signers : [Principal]) = threshold {
               prop.state := { prop.state with active = false };
               // execute payload and keep result in the state
               await* execute(prop, payload);
+              return "Proposal executed";
+            } else {
+              return "Proposal accepted";
             };
-            return;
           };
-          case _ ();
+          case _ {
+            return "Proposal not active"
+          };
         };
       };
     };
+
+    return "Proposal not found";
   };
 
   public shared ({ caller }) func reject(id : Id) : async () {
