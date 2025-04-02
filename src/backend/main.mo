@@ -1153,7 +1153,4 @@ shared actor class Charclub(collectionOwner: Types.Account) = Self {
       #Err(Error.message(err))
     }
   };
-
-  // Testing purpose
-  public shared func helloworld(): async Text { return "hello world"; };
 }
