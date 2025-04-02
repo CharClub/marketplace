@@ -55,7 +55,7 @@ if [ -z "$target_canister_id" ]; then
 fi
 
 install_args=$(echo "(record {
-  mode = variant { upgrade = null };
+  mode = variant { upgrade = record {skip_pre_upgrade = true} };
   canister_id = principal \"$target_canister_id\";
   wasm_module = blob \"$(hexdump -ve '1/1 "%.2x"' "$wasm" | sed 's/../\\&/g')\";
   arg = blob \"DIDL\\00\\00\"
