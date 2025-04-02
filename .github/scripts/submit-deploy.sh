@@ -58,7 +58,7 @@ install_args=$(echo "(record {
   mode = variant { upgrade = null };
   canister_id = principal \"$target_canister_id\";
   wasm_module = blob \"$(hexdump -ve '1/1 "%.2x"' "$wasm" | sed 's/../\\&/g')\";
-  arg = blob "DIDL\00\00"
+  arg = blob \"DIDL\\00\\00\"
 })" | didc encode -f blob)
 
 result=$(dfx canister call "$canister_id" submit --network=ic \
