@@ -1,10 +1,5 @@
 name: Deployment
-# on: [workflow_dispatch]
-on:
-  push:
-    branches: [master]
-  pull_request:
-    types: [opened, synchronize]
+on: [workflow_dispatch]
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
@@ -49,8 +44,7 @@ jobs:
         env:
           DFX_WARNING: -mainnet_plaintext_identity
           VITE_CHARCLUB_AI_URL: "https://chat.charclub.ai"
-          CANISTER_ID_LEDGE: "ryjl3-tyaaa-aaaaa-aaaba-cai"
-          DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/1356207850807890052/282TX4qN_Ej27SlQj6ZUiSyKXlyvffrekGut6htV51zsR0EI0K10cDMg00_jbpfaySMG
+          DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/1356930483728158847/wXgJ0vPU5pqEVc_2xxJpVTNJ4VDWL-3hUqy3742JwMeF1-Cwk63dz5gFIZBY-cIAtC_N
           OWNER: "lxprt-zo2ak-nf6ju-h62xj-h5bbq-mg33k-wi2zm-ylur7-2uqdj-rlio7-uae"
 
       - name: Install Frontend Dependencies
@@ -62,4 +56,5 @@ jobs:
         run: dfx deploy --network=ic frontend
         env:
           DFX_WARNING: -mainnet_plaintext_identity
+          CANISTER_ID_LEDGE: "ryjl3-tyaaa-aaaaa-aaaba-cai"
 
