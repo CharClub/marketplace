@@ -44,7 +44,7 @@ jobs:
         env:
           DFX_WARNING: -mainnet_plaintext_identity
           VITE_CHARCLUB_AI_URL: "https://chat.charclub.ai"
-          DISCORD_WEBHOOK_URL: https://discord.com/api/webhooks/1356930483728158847/wXgJ0vPU5pqEVc_2xxJpVTNJ4VDWL-3hUqy3742JwMeF1-Cwk63dz5gFIZBY-cIAtC_N
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
           OWNER: "lxprt-zo2ak-nf6ju-h62xj-h5bbq-mg33k-wi2zm-ylur7-2uqdj-rlio7-uae"
 
       - name: Install Frontend Dependencies
