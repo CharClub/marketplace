@@ -236,7 +236,7 @@ module {
     #Unauthorized;
   };
 
- public type RemoveListingError = {
+  public type RemoveListingError = {
     #ListingNotFound;
     #Unauthorized;
   };
@@ -245,6 +245,10 @@ module {
     #NotFound;
     #Unauthorized;
     #InternalError: Text;
+  };
+
+  public type TransferCollectionOwnerError = {
+    #Unauthorized;
   };
   //////////////////
 
