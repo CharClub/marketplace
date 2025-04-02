@@ -86,8 +86,11 @@ actor class (signers : [Principal]) = threshold {
               return "Proposal accepted";
             };
           };
-          case _ {
+          case(false, _) {
             return "Proposal not active"
+          };
+          case _ {
+            return "Invalid vote"
           };
         };
       };
@@ -96,7 +99,7 @@ actor class (signers : [Principal]) = threshold {
     return "Proposal not found";
   };
 
-  public shared ({ caller }) func reject(id : Id) : async () {
+  public shared ({ caller }) func reject(id : Id) : async Text {
     for (prop in proposals.vals()) {
       let { id = currentId; signers } = prop;
       if (id == currentId) {
@@ -107,12 +110,19 @@ actor class (signers : [Principal]) = threshold {
             let state = { prop.state with no = no + 1; votes };
             let rejected = 2 * state.no >= signers.size();
             prop.state := { state with active = not rejected };
-            return;
+            return if (rejected) "Proposal rejected" else "Rejection submitted";
           };
-          case _ ();
+          case(false, _) {
+            return "Proposal not active"
+          };
+          case _ {
+            return "Invalid vote"
+          };
         };
       };
     };
+
+    return "Proposal not found";
   };
 
   public shared ({ caller }) func prune() : async () {
