@@ -9,8 +9,6 @@ import Array "mo:base/Array";
 import Text "mo:base/Text";
 import HashMap "mo:base/HashMap";
 import Hash "mo:base/Hash";
-import Debug "mo:base/Debug";
-import List "mo:base/List";
 import Error "mo:base/Error";
 import Blob "mo:base/Blob";
 import Utils "./utils";
@@ -777,7 +775,7 @@ shared actor class Charclub(collectionOwner: Types.Account) = Self {
     let transferId: Nat = transferSequentialIndex;
     _incrementTransferIndex();
 
-    let transaction: Types.Transaction = _addTransaction(#icrc7_transfer, now, ?Buffer.toArray(transferredTokenIds), ?acceptedTo, ?acceptedFrom, ?acceptedCaller, transferArgs.memo, transferArgs.created_at_time, null);
+    ignore _addTransaction(#icrc7_transfer, now, ?Buffer.toArray(transferredTokenIds), ?acceptedTo, ?acceptedFrom, ?acceptedCaller, transferArgs.memo, transferArgs.created_at_time, null);
 
     return #Ok(transferId);
   };
@@ -872,7 +870,7 @@ shared actor class Charclub(collectionOwner: Types.Account) = Self {
 
     _incrementTotalSupply(1);
 
-    let transaction: Types.Transaction = _addTransaction(#mint, now, ?[tokenId], ?acceptedTo, null, null, null, null, null);
+    ignore _addTransaction(#mint, now, ?[tokenId], ?acceptedTo, null, null, null, null, null);
 
     return #Ok(tokenId);
   };
@@ -919,11 +917,6 @@ shared actor class Charclub(collectionOwner: Types.Account) = Self {
     let callerAccount: Types.Account = {
       owner = caller; subaccount=?Utils.getDefaultSubaccount()
     };
-
-    Debug.print("callerAccount: " # Utils.accountToText(callerAccount));
-    Debug.print("callerPrincipal: " # Principal.toText(caller));
-    Debug.print("item.owner: " # Utils.accountToText(_item.owner));
-    Debug.print("item.ownerPrincipal: " # Principal.toText(_item.owner.owner));
 
     if (Utils.compareAccounts(callerAccount, _item.owner) != #equal) {
       return #Err(#Unauthorized);
@@ -1001,17 +994,11 @@ shared actor class Charclub(collectionOwner: Types.Account) = Self {
         if (existingBuyOrder != null) {
           let ?_buyOrder = existingBuyOrder;
           if(Nat64.less(now, _buyOrder.expiresAtTime) and _buyOrder.buyer != caller) {
-            Debug.print("Buy order already exists");
-            Debug.print("Buyer: " # Principal.toText(_buyOrder.buyer));
-            Debug.print("Caller: " # Principal.toText(caller));
-            // FIXME: for testing, remove this in production
-            buyOrders := Trie.remove(buyOrders, Utils.keyFromListingId listingId, Nat.equal).0;
             return #Err(#BuyOrderAlreadyExists);
           }
         };
 
         let acceptedCaller: Types.Account = Utils.acceptAccount({owner= caller; subaccount=?Utils.getDefaultSubaccount()});
-        let acceptedFrom: Types.Account = Utils.acceptAccount(_item.owner);
 
         let canisterPrincipal = Principal.fromActor(Self);
         let canisterAddress = Utils.blobToHex(Principal.toLedgerAccount(canisterPrincipal, null));
@@ -1087,26 +1074,38 @@ shared actor class Charclub(collectionOwner: Types.Account) = Self {
                     transfer.amount.e8s == expectedAmount.e8s) {
                   let item = Trie.get(tokens, Utils.keyFromTokenId tokenId, Nat.equal);
                   let ?_item = item else return #Err(#InvalidTokenId);
-                  let newOwner = buyOrder.buyer;
-                  let newOwnerAccount = {
-                    owner = newOwner;
+                  let buyer = buyOrder.buyer;
+                  let buyerAccount = {
+                    owner = buyer;
                     subaccount = ?Utils.getDefaultSubaccount()
                   };
-                  let oldOwnerAccount = Utils.acceptAccount(_item.owner);
+                  let sellerAccount = Utils.acceptAccount(_item.owner);
 
-                  let transferResult = _singleTransfer(null, oldOwnerAccount, newOwnerAccount, tokenId, false, now);
+                  let transferResult = _singleTransfer(null, sellerAccount, buyerAccount, tokenId, false, now);
 
-                  ignore _addTransaction(#icrc7_transfer, now, ?[tokenId], ?newOwnerAccount, ?oldOwnerAccount, null, ?block.transaction.memo, ?buyOrder.createdAtTime, null);
+                  ignore _addTransaction(#icrc7_transfer, now, ?[tokenId], ?buyerAccount, ?sellerAccount, null, ?block.transaction.memo, ?buyOrder.createdAtTime, null);
 
 
                   buyOrders := Trie.remove(buyOrders, Utils.keyFromListingId listingId, Nat.equal).0;
                   listingTokens := Trie.remove(listingTokens, Utils.keyFromTokenId tokenId, Nat.equal).0;
 
                   switch (transferResult) {
-                      case null return #Ok(#Verified);
+                      case null {
+                        let transferArgs : IcpLedger.TransferArgs = {
+                          memo = 0;
+                          amount = expectedAmount;
+                          fee = { e8s = 10_000 };
+                          from_subaccount = null;
+                          to = Principal.toLedgerAccount(sellerAccount.owner, sellerAccount.subaccount);
+                          created_at_time = null;
+                        };
+                        let transferResult = await IcpLedger.transfer(transferArgs);
+                        // TODO: Transfer back to seller
+                        return #Ok(#Verified);
+                      };
                       case (?result) {
                         return #Err(#Unauthorized);
-                      }
+                      };
                     }
                 };
               };
@@ -1152,5 +1151,15 @@ shared actor class Charclub(collectionOwner: Types.Account) = Self {
     } catch (err) {
       #Err(Error.message(err))
     }
+  };
+
+  public shared({caller}) func transfer_collection_owner(newOwner: Types.Account): async Types.Result<Types.Account, Types.TransferCollectionOwnerError> {
+    if(not Principal.equal(owner.owner, caller)) {
+      return #Err(#Unauthorized);
+    };
+
+    owner := newOwner;
+
+    return #Ok(owner);
   };
 }

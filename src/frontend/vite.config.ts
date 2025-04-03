@@ -9,7 +9,7 @@ const iiUrl = (env: Record<string, string>) => {
     return `http://${env.CANISTER_ID_INTERNET_IDENTITY}.localhost:4943`;
   }
   if (env.DFX_NETWORK === "ic") {
-    return `https://${env.CANISTER_ID_INTERNET_IDENTITY}.ic0.app`;
+    return `https://identity.ic0.app`;
   }
 };
 

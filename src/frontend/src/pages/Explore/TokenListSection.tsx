@@ -1,9 +1,7 @@
-import MenuSelect from "@charm/components/ui/MenuSelect";
 import NftCard from "@charm/components/ui/NftCard";
 import ButtonSlider from "@charm/components/ui/Slide";
 import { useQueryIcrc7Tokens } from "@charm/hooks/queries/icrc7Tokens";
 
-import { MenuSelectOptions } from "./constants";
 import { useState } from "react";
 
 const TokenListSection = () => {
@@ -11,7 +9,7 @@ const TokenListSection = () => {
   const { data: tokenMetadatas, isLoading: isLoadingTokenMetadatas } =
     useQueryIcrc7Tokens({
       limit: 40,
-      tag: selectedTag,
+      tag: selectedTag ?? undefined,
     });
   // TODO: add pagination support
 
