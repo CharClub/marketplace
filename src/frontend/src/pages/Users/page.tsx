@@ -74,7 +74,7 @@ export default function UserProfile() {
           </div>
           <TabPanels className="mb-6">
             <TabPanel>
-              <div className="flex flex-col flex-wrap gap-2 sm:flex-row">
+              <div className="-mx-3 mb-6 flex flex-col flex-wrap sm:flex-row">
                 {!isLoadingTokenMetadatas && (
                   <>
                     {tokenMetadatas?.map((tokenMetadata) => (
