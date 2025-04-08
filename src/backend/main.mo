@@ -875,30 +875,6 @@ shared actor class Charclub(collectionOwner: Types.Account) = Self {
     return #Ok(tokenId);
   };
 
-  // public shared({ caller }) func buyToken(tokenId: Types.TokenId) : async Types.BuyTokenResult {
-  //   let now = Nat64.fromIntWrap(Time.now());
-  //
-  //   let callerSubaccount = Utils.getDefaultSubaccount();
-  //   let acceptedCaller: Types.Account = Utils.acceptAccount({owner= caller; subaccount=?callerSubaccount});
-  //
-  //   let item = Trie.get(tokens, Utils.keyFromTokenId tokenId, Nat.equal);
-  //
-  //   // TODO: check for permitted drift
-  //
-  //   switch (item) {
-  //     case null {
-  //       return #Err(#InvalidTokenId);
-  //     };
-  //     case (?_elem) {
-  //       let acceptedFrom: Types.Account = Utils.acceptAccount(_elem.owner);
-  //       let transferResult = _singleTransfer(?acceptedCaller, acceptedFrom, acceptedCaller, tokenId, false, now);
-  //     }
-  //   };
-  //
-  //
-  //   return 1;
-  // };
-  //
   public shared({caller}) func createListing(
     createListingArgs: Types.CreateListingArgs
   ): async Types.CreateListingResult {
@@ -1100,7 +1076,6 @@ shared actor class Charclub(collectionOwner: Types.Account) = Self {
                           created_at_time = null;
                         };
                         let transferResult = await IcpLedger.transfer(transferArgs);
-                        // TODO: Transfer back to seller
                         return #Ok(#Verified);
                       };
                       case (?result) {
