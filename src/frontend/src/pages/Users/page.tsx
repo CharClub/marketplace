@@ -2,7 +2,7 @@ import NftCard from "@charm/components/ui/NftCard";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import MenuSelect from "@charm/components/ui/MenuSelect";
 import { MenuSelectOptions } from "../Explore/constants";
-import { useNavigate, useNavigation, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getShortenAddress, isValidAddress } from "@charm/utils/crypto";
 import { useQueryIcrc7Tokens } from "@charm/hooks/queries/icrc7Tokens";
 import { useEffect } from "react";
