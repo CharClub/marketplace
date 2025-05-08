@@ -3,6 +3,7 @@ import ButtonSlider from "@charm/components/ui/Slide";
 import { useQueryIcrc7Tokens } from "@charm/hooks/queries/icrc7Tokens";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 
 const TokenListSection = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -51,18 +52,34 @@ const TokenListSection = () => {
         {/* </div> */}
       </div>
 
-      <div className="-mx-3 mb-6 flex flex-col flex-wrap sm:flex-row">
+      <motion.div
+        className="-mx-3 mb-6 flex flex-col flex-wrap sm:flex-row"
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.1,
+            },
+          },
+        }}
+      >
         {!isLoadingTokenMetadatas && (
           <>
             {tokenMetadatas?.map(
               (tokenMetadata) =>
                 tokenMetadata && (
-                  <div
+                  <motion.div
                     key={`token-${tokenMetadata.tokenId}`}
                     className="w-full px-1.5 pb-3 sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
                   >
                     <NftCard {...tokenMetadata} />
-                  </div>
+                  </motion.div>
                 ),
             )}
             {tokenMetadatas?.length === 0 && (
@@ -70,7 +87,7 @@ const TokenListSection = () => {
             )}
           </>
         )}
-      </div>
+      </motion.div>
 
       {/* <button */}
       {/*   type="button" */}

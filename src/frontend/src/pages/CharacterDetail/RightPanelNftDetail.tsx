@@ -6,6 +6,7 @@ import { getTxFrom, getTxTo } from "@charm/utils/transaction";
 import { accountToIdentifier, getShortenAddress } from "@charm/utils/crypto";
 import { ArrowRight } from "@charm/components/icons/ArrowRight";
 import { useQueryIcrc7OwnerOf } from "@charm/hooks/queries/icrc7OwnerOf";
+import { motion } from "framer-motion";
 import { getCharacterUrl, titleCase } from "@charm/utils";
 
 export type RightPanelNftDetailProps = {
@@ -32,7 +33,12 @@ const RightPanelNftDetail = ({ tokenId }: RightPanelNftDetailProps) => {
   const tokenMetadata = tokenMetadatas?.[0];
 
   return (
-    <div className="flex flex-col gap-2">
+    <motion.div
+      className="flex flex-col gap-2"
+      initial={{ x: -100, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <section className="flex flex-col gap-6 rounded-3xl bg-other-bgSection p-6">
         <div className="flex flex-col gap-2">
           <h2 className="leading-h5 text-h5 font-bold">
@@ -97,7 +103,13 @@ const RightPanelNftDetail = ({ tokenId }: RightPanelNftDetailProps) => {
           const toTruncated = getShortenAddress(to);
 
           return (
-            <div className="flex items-center gap-4" key={tx.timestamp}>
+            <motion.div
+              className="flex items-center gap-4"
+              key={tx.timestamp}
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
               <div>
                 <img
                   src="/images/default-avatar.png"
@@ -125,11 +137,11 @@ const RightPanelNftDetail = ({ tokenId }: RightPanelNftDetailProps) => {
                   )}
                 </p>
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </section>
-    </div>
+    </motion.div>
   );
 };
 export default RightPanelNftDetail;
