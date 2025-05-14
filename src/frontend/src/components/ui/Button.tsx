@@ -1,4 +1,5 @@
 import { cn } from "@charm/utils/cn";
+import { motion } from "framer-motion";
 import { cva } from "class-variance-authority";
 
 const buttonVariants = cva(
@@ -44,7 +45,8 @@ export type ButtonProps = React.ComponentProps<"button"> & {
 
 export function Button({ className, variant, size, ...props }: ButtonProps) {
   return (
-    <button
+    <motion.button
+      whileHover={variant === "primary" ? { scale: 1.05 } : {}}
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />
