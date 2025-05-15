@@ -88,13 +88,6 @@ const TokenListSection = () => {
           </>
         )}
       </motion.div>
-
-      {/* <button */}
-      {/*   type="button" */}
-      {/*   className="mx-auto flex items-center justify-center rounded-xl bg-other-bgSection px-4 py-2.5 text-sm font-semibold leading-5" */}
-      {/* > */}
-      {/*   Load more NFT Character */}
-      {/* </button> */}
     </section>
   );
 };

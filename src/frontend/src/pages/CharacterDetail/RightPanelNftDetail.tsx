@@ -5,7 +5,6 @@ import { format } from "date-fns";
 import { getTxFrom, getTxTo } from "@charm/utils/transaction";
 import { accountToIdentifier, getShortenAddress } from "@charm/utils/crypto";
 import { ArrowRight } from "@charm/components/icons/ArrowRight";
-import { useQueryIcrc7OwnerOf } from "@charm/hooks/queries/icrc7OwnerOf";
 import { motion } from "framer-motion";
 import { getCharacterUrl, titleCase } from "@charm/utils";
 
