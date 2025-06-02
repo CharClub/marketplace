@@ -30,7 +30,8 @@ import {
 } from "@ic/backend/backend.did";
 import { useQueryClient } from "@tanstack/react-query";
 import Big from "big.js";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 
 export type RightPanelNftDetailProps = {
@@ -292,16 +293,45 @@ const LeftPanelNftDetail = ({ tokenId }: RightPanelNftDetailProps) => {
   return (
     <>
       <div className="flex flex-col gap-2">
-        <div className="relative">
-          {tokenMetadata && (
-            <img
-              src={tokenMetadata?.tokenImage}
-              alt={`Image of ${tokenMetadata?.tokenName}`}
-              className="aspect-square size-full rounded-3xl object-cover"
-              width={256}
-              height={256}
-            />
-          )}
+        <div className="relative aspect-square size-full">
+          <AnimatePresence>
+            {tokenMetadata && (
+              <motion.div
+                key={tokenMetadata.tokenImage}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="aspect-square size-full rounded-3xl overflow-hidden absolute inset-0"
+              >
+                <img
+                  src={tokenMetadata.tokenImage}
+                  alt={`Image of ${tokenMetadata.tokenName}`}
+                  className="object-cover w-full h-full"
+                  width={256}
+                  height={256}
+                />
+              </motion.div>
+            )}
+            {!tokenMetadata && (
+              <motion.div
+                key="placeholder"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                className="aspect-square size-full rounded-3xl overflow-hidden"
+              >
+                <img
+                  src="/images/default-avatar.png"
+                  alt="Placeholder"
+                  className="object-cover w-full h-full"
+                  width={256}
+                  height={256}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
           {WISHLIST_ENABLED && (
             <button
               type="button"
