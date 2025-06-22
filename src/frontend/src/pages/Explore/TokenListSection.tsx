@@ -53,7 +53,7 @@ const TokenListSection = () => {
       </div>
 
       <motion.div
-        className="-mx-3 mb-6 flex flex-col flex-wrap sm:flex-row"
+        className="-mx-3 mb-6 flex flex-col flex-wrap sm:flex-row min-h-[400px]"
         initial="hidden"
         animate="visible"
         variants={{
