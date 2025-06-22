@@ -83,7 +83,14 @@ const TokenListSection = () => {
                 ),
             )}
             {tokenMetadatas?.length === 0 && (
-              <div className="w-full text-center">No results</div>
+              <div className="w-full text-center py-10">
+                <div className="text-2xl text-gray-400">
+                  No NFTs Found
+                </div>
+                <div className="mt-2 text-gray-400">
+                  Try selecting a different category or check back later.
+                </div>
+              </div>
             )}
           </>
         )}
