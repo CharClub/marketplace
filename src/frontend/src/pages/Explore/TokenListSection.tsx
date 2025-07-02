@@ -2,17 +2,27 @@ import NftCard from "@charm/components/ui/NftCard";
 import ButtonSlider from "@charm/components/ui/Slide";
 import { useQueryIcrc7Tokens } from "@charm/hooks/queries/icrc7Tokens";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 
 const TokenListSection = () => {
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
-  const { data: tokenMetadatas, isLoading: isLoadingTokenMetadatas } =
-    useQueryIcrc7Tokens({
-      limit: 40,
-      tag: selectedTag ?? undefined,
-    });
+  const {
+    data: tokenMetadatas,
+    isLoading: isLoadingTokenMetadatas,
+    error: tokenMetadatasError,
+  } = useQueryIcrc7Tokens({
+    limit: 40,
+    tag: selectedTag ?? undefined,
+  });
   // TODO: add pagination support
+
+  useEffect(() => {
+    if (tokenMetadatasError) {
+      toast.error("Failed to load token metadata. Please try again later.");
+    }
+  }, [tokenMetadatasError]);
 
   return (
     <section className="mx-auto max-w-[1440px] p-12">
@@ -84,9 +94,7 @@ const TokenListSection = () => {
             )}
             {tokenMetadatas?.length === 0 && (
               <div className="w-full text-center py-10">
-                <div className="text-2xl text-gray-400">
-                  No NFTs Found
-                </div>
+                <div className="text-2xl text-gray-400">No NFTs Found</div>
                 <div className="mt-2 text-gray-400">
                   Try selecting a different category or check back later.
                 </div>

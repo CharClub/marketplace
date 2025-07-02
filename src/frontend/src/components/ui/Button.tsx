@@ -1,5 +1,5 @@
 import { cn } from "@charm/utils/cn";
-import { motion } from "framer-motion";
+import { HTMLMotionProps, motion } from "framer-motion";
 import { cva } from "class-variance-authority";
 
 const buttonVariants = cva(
@@ -31,7 +31,7 @@ const buttonVariants = cva(
   },
 );
 
-export type ButtonProps = React.ComponentProps<"button"> & {
+export type ButtonProps = HTMLMotionProps<"button"> & {
   variant?:
     | "primary"
     | "outline"
