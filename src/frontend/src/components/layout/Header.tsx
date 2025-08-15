@@ -35,20 +35,17 @@ const Header = () => {
               <h1 className="sr-only">CharMarket</h1>
             </Link>
             <div className="hidden h-12 w-[350px] justify-center gap-3 rounded-xl border border-opacityColor-10 stroke-opacityColor-70 p-3 px-4 py-2.5 outline-none sm:flex sm:flex-1">
-              <label
-                htmlFor="Search"
-                className="flex items-center fill-transparent stroke-opacityColor-70"
-              >
-                <MagnifyingGlassIcon />
-                <div className="sr-only">Search</div>
-              </label>
-
-              <input
-                type="text"
-                id="Search"
-                placeholder="Search"
-                className="w-full bg-transparent text-base font-normal leading-6 text-white outline-none placeholder:text-opacityColor-70"
-              />
+              <div className="flex items-center fill-transparent stroke-opacityColor-70">
+                <MagnifyingGlassIcon aria-hidden="true" />
+                <label htmlFor="Search" className="sr-only">Search</label>
+                <input
+                  type="text"
+                  id="Search"
+                  placeholder="Search"
+                  className="w-full bg-transparent text-base font-normal leading-6 text-white outline-none placeholder:text-opacityColor-70"
+                  aria-label="Search"
+                />
+              </div>
             </div>
           </div>
 
@@ -114,39 +111,29 @@ const ProfilePanel = () => {
     navigator.clipboard.writeText(content);
     toast.success("Copied to clipboard");
   };
+
+  const renderAccountInfo = (label: string, value: string) => (
+    <div className="flex w-full items-center gap-4 px-4 py-3">
+      <div className="font-medium text-sm text-white flex items-center justify-between w-full">
+        <div>
+          <p className="text-gray-500">{label}</p>
+          {getShortenAddress(value)}
+        </div>
+        <button onClick={() => handleCopy(value)}>
+          <Copy className="size-4" />
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <div className="bg-background-1 p-2">
       <div className="divide-y divide-divider overflow-hidden rounded-lg bg-secondary">
-        {!!defaultAccountId && (
-          <div className="flex w-full items-center gap-4 px-4 py-3">
-            <div className="font-medium text-sm text-white flex items-center justify-between w-full">
-              <div>
-                <p className="text-gray-500">Account ID</p>
-                {getShortenAddress(defaultAccountId)}
-              </div>
-              <button onClick={() => handleCopy(defaultAccountId)}>
-                <Copy className="size-4" />
-              </button>
-            </div>
-          </div>
-        )}
-        {!!principalId && (
-          <div className="flex w-full items-center gap-4 px-4 py-3">
-            <div className="font-medium text-sm text-white flex items-center justify-between w-full">
-              <div>
-                <p className="text-gray-500">Principal ID</p>
-                {getShortenAddress(principalId)}
-              </div>
-              <button onClick={() => handleCopy(principalId)}>
-                <Copy className="size-4" />
-              </button>
-            </div>
-          </div>
-        )}
+        {!!defaultAccountId && renderAccountInfo("Account ID", defaultAccountId)}
+        {!!principalId && renderAccountInfo("Principal ID", principalId)}
         <div className="flex w-full items-center gap-4 px-4 py-3">
           <div>
             <p className="text-gray-500">Balance</p>
-
             <p className="font-medium text-white text-sm">
               {isLoadingBalance ? "-" : e8sToIcp(balance ?? 0).toFixed(3)} ICP
             </p>

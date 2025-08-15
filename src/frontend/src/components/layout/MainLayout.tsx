@@ -4,7 +4,7 @@ import Header from "./Header";
 
 export default function MainLayout() {
   return (
-    <div>
+    <div className="main-layout">
       <Header />
 
       <main className="h-full min-h-[calc(100vh-56px)] pt-20">

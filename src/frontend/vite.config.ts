@@ -15,8 +15,8 @@ const iiUrl = (env: Record<string, string>) => {
 
 const ledgerCanisterId = (env: Record<string, string>) => {
   if (env.DFX_NETWORK === "local") {
-    console.log('env.CANISTER_ID_LEDGER', env.CANISTER_ID_LEDGER);
-    return env.CANISTER_ID_LEDGER;
+    console.log('env.CANISTER_ID_ICP_LEDGER_CANISTER', env.CANISTER_ID_ICP_LEDGER_CANISTER);
+    return env.CANISTER_ID_ICP_LEDGER_CANISTER;
   }
   if (env.DFX_NETWORK === "ic") {
     return "ryjl3-tyaaa-aaaaa-aaaba-cai";
