@@ -7,13 +7,20 @@ import { SettingsPage } from "@charm/pages/Setting";
 import UserProfile from "@charm/pages/Users/page";
 import { type RouteObject } from "react-router-dom";
 
+import SearchPage from "@charm/pages/Search";
+
 const routes: Array<RouteObject> = [
   {
-    element: <MainLayout />,
+    element: <MainLayout />, 
     children: [
       {
         index: true,
         element: <ExplorePage />,
+      },
+
+      {
+        path: "search",
+        element: <SearchPage />,
       },
 
       {

@@ -12,6 +12,7 @@ export type UseQueryIcrc7TokensProps = {
   limit?: number;
   owner?: AccountIdentifierString;
   tag?: string;
+  search?: string;
 };
 
 export type Icrc7ListTokenResult = {
@@ -25,13 +26,14 @@ export const useQueryIcrc7Tokens = ({
   limit,
   owner,
   tag,
+  search,
 }: UseQueryIcrc7TokensProps) => {
   const { actor } = useActor();
 
   return useQuery({
-    queryKey: ["icrc7Tokens", { prev, limit, tag }, actor],
+    queryKey: ["icrc7Tokens", { prev, limit, tag, search }, actor],
     queryFn: async () => {
-      const result = ((await actor?.listTokens(opt(prev), opt(limit), opt(owner), opt(tag))) ??
+      const result = ((await actor?.listTokens(opt(prev), opt(limit), opt(owner), opt(tag), opt(search))) ??
         []) as Icrc7ListTokenResult;
 
       const tokenMetadatas = unsafeCast<Icrc7TokenMetadata[]>(

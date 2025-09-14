@@ -34,8 +34,8 @@ const Header = () => {
               <CharMarketLogo />
               <h1 className="sr-only">CharMarket</h1>
             </Link>
-            <div className="hidden h-12 w-[350px] justify-center gap-3 rounded-xl border border-opacityColor-10 stroke-opacityColor-70 p-3 px-4 py-2.5 outline-none sm:flex sm:flex-1">
-              <div className="flex items-center fill-transparent stroke-opacityColor-70">
+            <div className="hidden h-12 w-[350px] justify gap-3 rounded-xl border border-opacityColor-10 stroke-opacityColor-70 p-3 px-4 py-2.5 outline-none sm:flex sm:flex-1">
+              <div className="flex gap-3 items-center fill-transparent stroke-opacityColor-70">
                 <MagnifyingGlassIcon aria-hidden="true" />
                 <label htmlFor="Search" className="sr-only">Search</label>
                 <input
@@ -44,6 +44,16 @@ const Header = () => {
                   placeholder="Search"
                   className="w-full bg-transparent text-base font-normal leading-6 text-white outline-none placeholder:text-opacityColor-70"
                   aria-label="Search"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      const target = e.target as HTMLInputElement;
+                      const query = target.value.trim();
+                      if (query.length > 0) {
+                        window.location.href = `/search?q=${encodeURIComponent(query)}`;
+                      }
+                    }
+                  }}
                 />
               </div>
             </div>

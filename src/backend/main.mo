@@ -450,7 +450,8 @@ shared actor class Charclub(collectionOwner: Types.Account) = Self {
     prev: ?Types.TokenId,
     limit: ?Nat,
     owner: ?Types.AccountIdentifier,
-    tag: ?Text
+    tag: ?Text,
+    search: ?Text
   ): async [Types.TokenMetadata] {
     var allTokens: [Types.TokenMetadata] = Trie.toArray<Types.TokenId, Types.TokenMetadata, Types.TokenMetadata>(tokens, func (k, v) = v);
 
@@ -488,6 +489,31 @@ shared actor class Charclub(collectionOwner: Types.Account) = Self {
         } else {
           return false;
         };
+      });
+    };
+
+    if (search != null) {
+      let ?_search = search;
+      let searchLower = Text.toLowercase(_search);
+      allTokens := Array.filter<Types.TokenMetadata>(allTokens, func (x) {
+        var nameMatch = false;
+
+        let nameValue = Array.find<Types.MetadataValue>(x.metadata, func (y) = Text.compare(y.0, "tokenName") == #equal);
+        if (nameValue != null) {
+          let ?_nameValue = nameValue;
+          switch (_nameValue.1) {
+            case (#Text(nameText)) {
+              let nameLower = Text.toLowercase(nameText);
+              let pattern: Text.Pattern = #text searchLower;
+              nameMatch := Text.contains(nameLower, pattern);
+            };
+            case _ {
+              nameMatch := false;
+            }
+          };
+        };
+
+        return nameMatch;
       });
     };
 
