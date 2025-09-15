@@ -79,9 +79,12 @@ const LeftPanelNftDetail = ({ tokenId }: RightPanelNftDetailProps) => {
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const value = event.target.value;
+    if (!value) return setListingPrice("");
+
     const regex = /^[0-9]+(\.[0-9]{0,4})?$/;
+
     if (regex.test(value)) {
-      setListingPrice(value);
+      setListingPrice(Number(value).toString());
     }
   };
 
@@ -89,7 +92,7 @@ const LeftPanelNftDetail = ({ tokenId }: RightPanelNftDetailProps) => {
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setTransferPrincipal(event.target.value);
-  }
+  };
 
   const handleTransferMemoChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -99,7 +102,7 @@ const LeftPanelNftDetail = ({ tokenId }: RightPanelNftDetailProps) => {
     if (regex.test(value)) {
       setTransferMemo(value);
     }
-  }
+  };
 
   const handleBuy = async (confirmed: boolean) => {
     if (!isAuthenticated) return login();
@@ -434,7 +437,7 @@ const LeftPanelNftDetail = ({ tokenId }: RightPanelNftDetailProps) => {
           </div>
         )}
       </div>
-      
+
       {/* TODO: Move these dialog to new file */}
       <Dialog
         open={isOpenConfirmBuyDialog}
